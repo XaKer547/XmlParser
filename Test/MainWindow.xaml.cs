@@ -55,6 +55,7 @@ namespace Test
             //берем первую запись
             positions.Push(0);
 
+
             //Eфс-1         Служебная информация
             foreach (XmlNode child in doc.DocumentElement.ChildNodes)
             {
@@ -91,7 +92,8 @@ namespace Test
 
                     x++;
 
-                    positions.Push(current + 1);
+                    positions.Push(i + 1);
+                    positions.Push(0);
 
                     ScrollDown();
                 }
@@ -103,21 +105,20 @@ namespace Test
                         Name = item.ParentNode.Name,
                         Value = item.InnerText,
                         X = x,
-                        Y = current
+                        Y = i
                     });
+
+                    x--;
 
                     //идем обратно
                     node = item.ParentNode;
+                    node = node.ParentNode;
                     positions.Pop();
 
                     ScrollDown();
                 }
-
             }
         }
-
-        int current = 0;
-
 
         /// <summary>
         /// Возвращается на один уровень иерархии
