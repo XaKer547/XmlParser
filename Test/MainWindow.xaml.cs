@@ -53,7 +53,7 @@ namespace Test
             doc.Load(@"C:\Users\student\Downloads\sus.XML");
 
             //берем первую запись
-
+            positions.Push(0);
 
             //Eфс-1         Служебная информация
             foreach (XmlNode child in doc.DocumentElement.ChildNodes)
@@ -78,13 +78,12 @@ namespace Test
         /// </summary>
         private void ScrollDown()
         {
-            //указатель на текущую позицию
-            var position = 0;
+            var position = positions.Peek();
 
-            foreach (XmlNode item in node.ChildNodes)
+            for (int i = position; i < node.ChildNodes.Count; i++)
             {
+                var item = node.ChildNodes[i];
 
-                //->
                 if (item.NodeType == XmlNodeType.Element)
                 {
                     //прыгаем глубже
@@ -92,13 +91,11 @@ namespace Test
 
                     x++;
 
-                    positions.Push(position);
+                    positions.Push(current + 1);
 
                     ScrollDown();
                 }
 
-                //|
-                //V
                 if (item.NodeType == XmlNodeType.Text)
                 {
                     collection.Add(new()
@@ -106,17 +103,20 @@ namespace Test
                         Name = item.ParentNode.Name,
                         Value = item.InnerText,
                         X = x,
-                        Y = position
+                        Y = current
                     });
 
+                    //идем обратно
+                    node = item.ParentNode;
+                    positions.Pop();
 
-
+                    ScrollDown();
                 }
-            }
 
-            //когда закончили
+            }
         }
 
+        int current = 0;
 
 
         /// <summary>
